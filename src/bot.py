@@ -25,7 +25,10 @@ async def ping(ctx):
 
 # Run the bot
 if __name__ == '__main__':
+    print("Starting bot...")
+    print(os.getenv('DISCORD_TOKEN'))
     token = os.getenv('DISCORD_TOKEN')
+    print(token)
     if not token:
         raise ValueError("No token found! Make sure to set DISCORD_TOKEN in your .env file")
     bot.run(token) 
