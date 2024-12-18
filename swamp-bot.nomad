@@ -9,26 +9,12 @@ job "swamp-discord-bot" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/swamp-netizens/discord-bot:main"
+        image = "ghcr.io/swamp-netizens/discord-bot:latest"
         force_pull = true
-
-        # Mount the token file from the host into the container
-        mount {
-          type = "bind"
-          source = "/etc/discord/token"
-          target = "/app/token"
-          readonly = true
-        }
-      }
-
-      template {
-        data = "{{ file \"/etc/discord/token\" }}"
-        destination = "secrets/discord_token"
-        change_mode = "restart"
       }
 
       env {
-        DISCORD_TOKEN = "${NOMAD_SECRETS_DIR}/discord_token"
+        DISCORD_TOKEN = "${discord_token}"
       }
 
       resources {

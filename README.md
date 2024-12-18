@@ -35,7 +35,7 @@ poetry run python src/bot.py
 
 Pull the image from the magical registry (like stealing a potion from the Fairy Godmother's factory):
 ```bash
-docker pull ghcr.io/YOUR_GITHUB_USERNAME/swamp-discord-bot:main
+docker pull ghcr.io/swamp-netizens/discord-bot:main
 ```
 
 Run it like you're running from an angry mob:
@@ -44,7 +44,7 @@ docker run -d \
   --name swamp-bot \
   --restart unless-stopped \
   -e DISCORD_TOKEN=your_magical_token_here \
-  ghcr.io/YOUR_GITHUB_USERNAME/swamp-discord-bot:main
+  ghcr.io/swamp-netizens/discord-bot:main
 ```
 
 ### 🗺️ Using Nomad (The Far Far Far Away Way)
