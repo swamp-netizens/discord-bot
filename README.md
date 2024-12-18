@@ -47,6 +47,31 @@ docker run -d \
   ghcr.io/YOUR_GITHUB_USERNAME/swamp-discord-bot:main
 ```
 
+### Using Nomad
+
+1. Store your Discord token on the Nomad server:
+   ```bash
+   sudo mkdir -p /etc/discord
+   echo "your_discord_token" | sudo tee /etc/discord/token
+   sudo chmod 600 /etc/discord/token
+   ```
+
+2. Deploy the bot using Nomad:
+   ```bash
+   nomad job run swamp-bot.nomad
+   ```
+
+3. Check the status:
+   ```bash
+   nomad status swamp-discord-bot
+   ```
+
+The Nomad configuration:
+- Mounts the token file from `/etc/discord/token` on the host
+- Uses Nomad's template feature to securely pass the token to the container
+- Includes automatic restarts and resource limits
+- Pulls the latest image from GHCR
+
 ## CI/CD
 
 This project uses GitHub Actions to automatically build and push Docker images to GitHub Container Registry (GHCR). The workflow:
