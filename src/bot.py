@@ -29,6 +29,18 @@ async def on_ready():
     logger.info(f'Bot {bot.user} has connected to Discord!')
     logger.info(f'Bot is in {len(bot.guilds)} guilds')
 
+@bot.event
+async def on_message(message):
+    # Don't respond to our own messages
+    if message.author == bot.user:
+        return
+
+    # Log message details
+    logger.info(f'Message from {message.author} in #{message.channel}: "{message.content}"')
+    
+    # Don't forget this line if you want commands to work too!
+    await bot.process_commands(message)
+
 @bot.command(name='ping')
 async def ping(ctx):
     """Simple command to check if the bot is responsive"""
