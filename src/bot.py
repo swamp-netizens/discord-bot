@@ -1,10 +1,21 @@
 import os
+import sys
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+# Configure logging to stdout
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger(__name__)
+
 # Load environment variables
 load_dotenv()
+logger.info("Starting bot initialization...")
 
 # Bot setup
 intents = discord.Intents.default()
@@ -15,8 +26,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f'{bot.user} has connected to Discord!')
-    print(f'Bot is in {len(bot.guilds)} guilds')
+    logger.info(f'Bot {bot.user} has connected to Discord!')
+    logger.info(f'Bot is in {len(bot.guilds)} guilds')
 
 @bot.command(name='ping')
 async def ping(ctx):
@@ -25,10 +36,17 @@ async def ping(ctx):
 
 # Run the bot
 if __name__ == '__main__':
-    print("Starting bot...")
-    print(os.getenv('DISCORD_TOKEN'))
+    logger.info("Starting bot...")
     token = os.getenv('DISCORD_TOKEN')
-    print(token)
-    if not token:
-        raise ValueError("No token found! Make sure to set DISCORD_TOKEN in your .env file")
+    
+    # Debug token presence (don't log the actual token!)
+    if token:
+        logger.info("Discord token found")
+        masked_token = token[:6] + '...' + token[-4:]
+        logger.info(f"Token starts with: {masked_token}")
+    else:
+        logger.error("No Discord token found in environment!")
+        sys.exit(1)
+
+    logger.info("Attempting to start bot with token...")
     bot.run(token) 

@@ -11,10 +11,20 @@ job "swamp-discord-bot" {
       config {
         image = "ghcr.io/swamp-netizens/discord-bot:latest"
         force_pull = true
+        logging {
+          type = "journald"
+          config {
+            tag = "discord-bot"
+          }
+        }
       }
 
-      env {
-        DISCORD_TOKEN = "${discord_token}"
+      template {
+        data = <<EOH
+DISCORD_TOKEN={{ with nomadVar "nomad/jobs/swamp-discord-bot" }}{{ .discord_token }}{{ end }}
+EOH
+        destination = "local/file.env"
+        env = true
       }
 
       resources {
@@ -30,4 +40,4 @@ job "swamp-discord-bot" {
       }
     }
   }
-} 
+}
