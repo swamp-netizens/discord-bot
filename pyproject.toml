@@ -2,7 +2,7 @@
 name = "swamp-discord-bot"
 version = "0.1.0"
 description = "A Discord bot for managing a friend server"
-authors = ["Forest <>"]
+authors = ["Forest <adsf@a.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
