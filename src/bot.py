@@ -30,6 +30,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 async def query_ai(prompt):
     """Query the AI endpoint with a prompt"""
