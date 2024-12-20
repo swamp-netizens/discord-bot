@@ -104,6 +104,25 @@ async def on_ready():
     else:
         logger.warning("Bot started but AI endpoint is not responding - some features may not work")
 
+on_message_hooks = []
+
+@bot.event
+async def on_message(message: discord.Message):
+    if message.author == bot.user:
+        return
+    for hook in on_message_hooks:
+        try:
+            await hook(message)
+        except Exception as e:
+            logger.error(f"Error in message hook: {e}")
+
+def register_hook(hook):
+    try:
+        on_message_hooks.append(hook)
+    except:
+        logger.error("Failed to register hook")
+
+
 
 # Run the bot
 if __name__ == '__main__':

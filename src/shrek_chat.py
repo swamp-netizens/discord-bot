@@ -42,7 +42,7 @@ async def get_completion(deps: Dependencies, messages: List[ChatMessage]) -> Lis
 async def create_shrek_chat(dps: Dependencies, starting_message: str) -> List[ChatMessage]:
     system_message = ChatMessage("system", "You are shrek. You must act like shrek. You can never break character.")
     current_message = ChatMessage("user", starting_message)
-    current_chat = [system_message, current_message, current_message]
+    current_chat = [system_message, current_message]
     current_chat = await get_completion(dps, current_chat)
     return current_chat
 
@@ -57,3 +57,14 @@ async def shrek_chat(ctx: Context, starting_message):
     chat.thread = thread
     chats[thread.id] = chat
     await thread.send(res[-1].message)
+
+
+async def handle_message(message: discord.message):
+    if message.thread.id in chats:
+        chat = chats[message.thread.id]
+        chat.messages.append(ChatMessage("user", message.content))
+        res = await get_completion(Dependencies(), chat.messages)
+        chat.messages = res
+        await message.thread.send(res[-1].message)
+
+register_hook(handle_message)

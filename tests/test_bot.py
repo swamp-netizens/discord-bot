@@ -7,7 +7,7 @@ from datetime import datetime
 # Add the src directory to the Python path
 sys.path.append("src")
 
-from bot import (
+from src.bot import (
     GENERAL_CHANNEL_ID,
     AI_ENDPOINT,
     MORNING_INTERVAL,
