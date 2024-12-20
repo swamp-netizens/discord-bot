@@ -1,5 +1,5 @@
 import pytest
-from src.shrek_chat import ChatMessage, create_shrek_chat, Dependencies
+from src.shrek_chat import ChatMessage, create_shrek_chat, LlmInterface
 import json
 import aiohttp
 
@@ -37,11 +37,11 @@ async def test_open_router_mock():
 @pytest.mark.skip
 @pytest.mark.asyncio
 async def test_full_chat():
-    class MockDeps(Dependencies):
+    class MockDeps(LlmInterface):
         async def query_ai(self, s: str) -> str:
             return await query_open_router(s)
 
-    dps: Dependencies = MockDeps()
+    dps: LlmInterface = MockDeps()
     res = await create_shrek_chat(dps, "what is love?")
     print(res[2].message)
     print(res)
@@ -50,11 +50,11 @@ async def test_full_chat():
 
 @pytest.mark.asyncio
 async def test_get_completion():
-    class MockDeps(Dependencies):
+    class MockDeps(LlmInterface):
         async def query_ai(self, s: str) -> str:
             return "Cowabunga dude!"
 
-    dps: Dependencies = MockDeps()
+    dps: LlmInterface = MockDeps()
     res = await create_shrek_chat(dps, "what is love?")
     assert res[0].role == "system"
     assert res[0].message == "You are shrek. You must act like shrek. You can never break character."

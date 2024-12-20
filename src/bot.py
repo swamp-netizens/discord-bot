@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List
 import discord
 import aiohttp
 import asyncio
@@ -9,6 +10,9 @@ from dotenv import load_dotenv
 
 # Configure logging to stdout
 import logging
+from shrek_chat import LlmInterface, ShrekChat
+from openrouterllm import OpenRouterLlm
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s',
@@ -96,6 +100,7 @@ async def on_ready():
     # Check AI endpoint health
     logger.info("Performing AI endpoint health check...")
     is_healthy = await check_ai_health()
+    await load_cogs()
     
     if is_healthy:
         # Start the good morning task only if AI is healthy
@@ -104,23 +109,18 @@ async def on_ready():
     else:
         logger.warning("Bot started but AI endpoint is not responding - some features may not work")
 
-on_message_hooks = []
+class LocalLlm:
+        async def query_ai(self, prompt: str):
+            return await query_ai(prompt)
 
-@bot.event
-async def on_message(message: discord.Message):
-    if message.author == bot.user:
-        return
-    for hook in on_message_hooks:
-        try:
-            await hook(message)
-        except Exception as e:
-            logger.error(f"Error in message hook: {e}")
 
-def register_hook(hook):
-    try:
-        on_message_hooks.append(hook)
-    except:
-        logger.error("Failed to register hook")
+cogs: List[commands.Cog] = [ShrekChat(bot, OpenRouterLlm())]
+
+
+
+async def load_cogs():
+    for cog in cogs:
+        await bot.add_cog(cog)
 
 
 
