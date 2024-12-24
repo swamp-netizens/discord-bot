@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from logging import Logger
 from typing import Dict, List
 
@@ -6,14 +5,9 @@ from attr import dataclass
 from discord import Message, Thread
 from discord.ext.commands import Bot, Cog, Context, command
 
+from llm import LocalLlm, OpenRouterLlm
 
 logger = Logger(__name__)
-
-
-class LlmInterface:
-    @abstractmethod
-    async def query_ai(self, prompt: str) -> str:
-        raise Exception("Unimplemented error")
 
 
 @dataclass
@@ -33,7 +27,7 @@ def to_prompt(messages: List[ChatMessage]) -> str:
     return "\n".join(map(lambda x: f"${x.role}:${x.message}", new_messages))
 
 
-async def get_completion(deps: LlmInterface, messages: List[ChatMessage]) -> List[ChatMessage]:
+async def get_completion(deps: LocalLlm, messages: List[ChatMessage]) -> List[ChatMessage]:
     response = await deps.query_ai(to_prompt(messages))
     new_ai_message = ChatMessage("assistant", response)
     messages.append(new_ai_message)
@@ -49,14 +43,13 @@ def create_shrek_chat() -> List[ChatMessage]:
 
 class ShrekChat(Cog):
     chats: Dict[int, ActiveChat] = {}
-    deps: LlmInterface
+    deps: LocalLlm
     def __init__(self, bot: Bot, deps):
         self.bot = bot
         self._last_member = None
         self.deps = deps
-        bot.add_listener(self.handle_shrek_response, "on_message")
 
-    @command(name="shrek_chat")
+    @command(name="shrek")
     async def shrek_chat(self, ctx: Context):
         thread = await ctx.message.create_thread(name="Shrek Chat")
         res = create_shrek_chat()
@@ -66,13 +59,19 @@ class ShrekChat(Cog):
         self.chats[thread.id] = chat
         await thread.send(res[-1].message)
 
-
-    async def handle_shrek_response(self, message: Message):
-        logger.info(message)
-        if message.thread and message.thread.id in self.chats:
-            chat = self.chats[message.thread.id]
+    @Cog.listener()
+    async def on_message(self, message: Message):
+        if message.author.id == self.bot.user.id:
+            return
+        logger.error(message)
+        if message.channel and message.channel.id in self.chats:
+            chat = self.chats[message.channel.id]
             chat.messages.append(ChatMessage("user", message.content))
             res = await get_completion(self.deps, chat.messages)
             chat.messages = res
-            await message.thread.send(res[-1].message)
+            await message.channel.send(res[-1].message)
 
+
+
+async def setup(bot):
+    await bot.add_cog(ShrekChat(bot, OpenRouterLlm()))

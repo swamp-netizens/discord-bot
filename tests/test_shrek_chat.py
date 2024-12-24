@@ -1,5 +1,5 @@
 import pytest
-from src.shrek_chat import ChatMessage, create_shrek_chat, LlmInterface
+from src.shrek_chat import create_shrek_chat, LlmInterface
 import json
 import aiohttp
 
