@@ -73,4 +73,4 @@ class ShrekChat(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(ShrekChat(bot, OpenRouterLlm()))
+    await bot.add_cog(ShrekChat(bot, LocalLlm()))
