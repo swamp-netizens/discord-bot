@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
-from llm import query_ai
+from src.llm import query_ai
 
 sys.path.append(os.path.dirname(__file__))
 # Configure logging to stdout

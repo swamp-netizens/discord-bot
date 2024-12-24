@@ -5,7 +5,7 @@ from attr import dataclass
 from discord import Message, Thread
 from discord.ext.commands import Bot, Cog, Context, command
 
-from llm import LocalLlm, OpenRouterLlm
+from src.llm import LocalLlm, OpenRouterLlm
 
 logger = Logger(__name__)
 
@@ -63,7 +63,6 @@ class ShrekChat(Cog):
     async def on_message(self, message: Message):
         if message.author.id == self.bot.user.id:
             return
-        logger.error(message)
         if message.channel and message.channel.id in self.chats:
             chat = self.chats[message.channel.id]
             chat.messages.append(ChatMessage("user", message.content))
