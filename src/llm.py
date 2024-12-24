@@ -33,7 +33,7 @@ async def query_ai(prompt):
 
 # mainly used for testing. Should not be used in production unless the user is aware that openai or anthropic or other apis are used
 async def query_open_router(prompt: str) -> str:
-    OPENROUTER_API_KEY="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"
+    OPENROUTER_API_KEY=""
     async with aiohttp.ClientSession() as session:
         async with session.post(
         url="https://openrouter.ai/api/v1/chat/completions",
