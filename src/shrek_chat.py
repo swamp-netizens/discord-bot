@@ -5,7 +5,7 @@ from attr import dataclass
 from discord import Message, Thread
 from discord.ext.commands import Bot, Cog, Context, command
 
-from src.llm import LocalLlm, OpenRouterLlm
+from llm import LocalLlm, OpenRouterLlm
 
 logger = Logger(__name__)
 
