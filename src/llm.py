@@ -18,9 +18,10 @@ async def query_ai(prompt):
             async with session.post(AI_ENDPOINT, json=payload) as response:
                 if response.status == 200:
                     data = await response.json()
-                    logger.debug(f"Received response from AI: {data}")
-                    response_text = data.get("text", "No response from AI")
-                    logger.debug(f"Received response from AI: {response_text}")
+                    response_text = data.get("choices", [{}])[0].get(
+                        "text", "No response from AI"
+                    )
+                    logger.debug(f"Received response text from AI: {response_text}")
                     return response_text
                 else:
                     logger.error(f"AI API error: {response.status}")
