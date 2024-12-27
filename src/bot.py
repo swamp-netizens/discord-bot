@@ -90,6 +90,9 @@ async def on_ready():
     logger.info(f'Bot {bot.user} has connected to Discord!')
     logger.info(f'Bot is in {len(bot.guilds)} guilds')
 
+    # Start the good morning task
+    send_good_morning.start()
+
     # Check AI endpoint health
     logger.info("Performing AI endpoint health check...")
     is_healthy = await check_ai_health()
