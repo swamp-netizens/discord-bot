@@ -4,7 +4,7 @@ import logging
 import aiohttp
 
 
-AI_ENDPOINT = "http://192.168.0.192:5000/v1/completions"
+AI_ENDPOINT = "http://192.168.0.192:5000/v1/chat/completions"
 
 logger = logging.getLogger("llm")
 
@@ -12,14 +12,22 @@ logger = logging.getLogger("llm")
 async def query_ai(prompt):
     """Query the AI endpoint with a prompt"""
     try:
-        payload = {"prompt": prompt, "max_tokens": 200, "temperature": 0.6, "seed": 10}
+        payload = {
+            "messages": [{"role": "user", "content": prompt}],
+            "mode": "instruct",
+            "instruction_template": "Alpaca",
+        }
         logger.debug(f"Sending request to AI endpoint with prompt: {prompt}")
         async with aiohttp.ClientSession() as session:
-            async with session.post(AI_ENDPOINT, json=payload) as response:
+            async with session.post(
+                AI_ENDPOINT, json=payload
+            ) as response:
                 if response.status == 200:
                     data = await response.json()
-                    response_text = data.get("choices", [{}])[0].get(
-                        "text", "No response from AI"
+                    response_text = (
+                        data.get("choices", [{}])[0]
+                        .get("message", {})
+                        .get("content", "No response from AI")
                     )
                     logger.debug(f"Received response text from AI: {response_text}")
                     return response_text
